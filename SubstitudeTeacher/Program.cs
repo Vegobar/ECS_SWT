@@ -45,5 +45,39 @@ namespace SubstitudeTeacher
             _window.Received(1).Close();
 
         }
+
+        [Test]
+        public void RunSelfTest_SensorFails()
+        {
+            _sensor.RunSelfTest().Returns(false);
+            _heater.RunSelfTest().Returns(true);
+            Assert.IsFalse(_uut.RunSelfTest());
+        }
+
+        [Test]
+        public void RunSelfTest_HeaterFails()
+        {
+            _sensor.RunSelfTest().Returns(true);
+            _heater.RunSelfTest().Returns(false);
+            Assert.IsFalse(_uut.RunSelfTest());
+        }
+
+
+        [Test]
+        public void RunSelfTest_YouColdOrWarm()
+        {
+            _heater.RunSelfTest().Returns(false);
+            _sensor.RunSelfTest().Returns(false);
+            Assert.IsFalse(_uut.RunSelfTest());
+        }
+
+        [Test]
+        public void RunSelfTest_WeWon()
+        {
+            _sensor.RunSelfTest().Returns(true);
+            _heater.RunSelfTest().Returns(true);
+            Assert.IsTrue(_uut.RunSelfTest());
+        }
+
     }
 }

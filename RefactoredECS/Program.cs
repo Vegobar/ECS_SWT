@@ -75,6 +75,9 @@ namespace RefactoredECS
             }
         }
 
-
+        public bool RunSelfTest()
+        {
+            return (_heater.RunSelfTest() & _tempSensor.RunSelfTest());
+        }
     }
 }
