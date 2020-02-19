@@ -1,15 +1,81 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RefactoredECS;
 
 namespace RefactoredECS
 {
-    class Program
+    public class ECS
     {
-        static void Main(string[] args)
+        private readonly ISensor _tempSensor;
+        private readonly IHeater _heater;
+        private readonly IWindow _window;
+        private int _lowerTemperatureThreshold;
+        private int _upperTemperatureThreshold;
+
+        // Property for heating threshold
+        public int LowerTemperatureThreshold
         {
+            get { return _lowerTemperatureThreshold; }
+            set
+            {
+                // Validation is done in the property set method
+                // value is the built in name for the set value
+                if (value <= _upperTemperatureThreshold)
+                    _lowerTemperatureThreshold = value;
+                else throw new ArgumentException("Lower threshold must be <= upper threshold");
+            }
         }
+
+
+        // Property for window threshold
+        public int UpperTemperatureThreshold
+        {
+            get { return _upperTemperatureThreshold; }
+            set
+            {
+                // Validation is done in the property set method
+                // value is the built in name for the set value
+                if (value >= _lowerTemperatureThreshold)
+                    _upperTemperatureThreshold = value;
+                else throw new ArgumentException("Upper threshold must be <= lower threshold");
+            }
+        }
+
+        // We use constructor injection for all dependencies
+        public ECS(ISensor tempSensor, IHeater heater, IWindow window, int lowerTemperatureThreshold, int upperTemperatureThreshold)
+        {
+            // Save references to dependencies
+            _tempSensor = tempSensor;
+            _heater = heater;
+            _window = window;
+
+            // Initialize properties
+            UpperTemperatureThreshold = upperTemperatureThreshold;
+            LowerTemperatureThreshold = lowerTemperatureThreshold;
+
+        }
+
+
+        public void Regulate()
+        {
+            var curTemp = _tempSensor.GetTemp();
+            // Determine which action to take according to the temperature
+            if (curTemp < LowerTemperatureThreshold)
+            {
+                _heater.TurnOn();
+                _window.Close();
+            }
+            else if (curTemp >= LowerTemperatureThreshold && curTemp <= UpperTemperatureThreshold)
+            {
+                _heater.TurnOff();
+                _window.Close();
+            }
+            else
+            {
+                _heater.TurnOff();
+                _window.Open();
+            }
+        }
+
+
     }
 }
