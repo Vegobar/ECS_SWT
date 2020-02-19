@@ -32,14 +32,16 @@ namespace SubstitudeTeacher
         [Test]
         public void test_Heater()
         {
-            _sensor.GetTemperature().Returns(_uut.GetThreshold())
+            _sensor.GetTemp().Returns(_uut.LowerTemperatureThreshold-10);
+            _uut.Regulate();
+            _heater.Received(1).TurnOn();
 
         }
 
         [Test]
         public void test_Window()
         {
-            _sensor.G
+            
         }
     }
 }
