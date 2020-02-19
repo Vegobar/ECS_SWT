@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace SubstitudeTeacher
 {
-    class Program
+    [TestFixture]
+    class Sub_tester
     {
-        static void Main(string[] args)
+        
+        [SetUp]
+        public void Setup()
         {
+            _
         }
     }
 }
